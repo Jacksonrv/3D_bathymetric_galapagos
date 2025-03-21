@@ -126,8 +126,8 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
 
-    html.P("Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations.",
-           "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details",
+    html.P(["Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations.",
+           "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
     
     dcc.Graph(figure=fig, style={'height': '90vh'}),
@@ -167,3 +167,9 @@ if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
     app.run(host="0.0.0.0", port=port, debug=False)
 
+#To improve:
+    #Integrate NASA api so users can choose date of chlorophyll
+    #Add dropdown to choose which element in tooltips and colormap
+    #Add ability to choose colormap
+    #Group points to display tooltips of all points there. 
+    #Add at5009 bathymetry data
