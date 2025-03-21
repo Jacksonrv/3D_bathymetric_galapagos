@@ -89,7 +89,7 @@ bathymetry_surface = go.Surface(
     cmin=np.nanmin(chl_log), 
     cmax=np.nanmax(chl_log),
     colorbar=dict(
-        title="Chlorophyll-a (mg/m³)",
+        title="Chlorophyll-a (mg/m³)<br>04.07.2011-04.08.2011",
         x=-0.15,
         len=0.75,
         tickvals=[np.log10(v) for v in [0.01, 0.1, 1, 10]],
@@ -126,7 +126,42 @@ fig.update_layout(
 app = dash.Dash(__name__)
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
-    dcc.Graph(figure=fig, style={'height': '90vh'})
+
+    html.P("This interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations.",
+           "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details",
+           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
+    
+    dcc.Graph(figure=fig, style={'height': '90vh'}),
+
+    html.P("Chlorophyll-a values are log-scaled. Barium residuals are calculated as",
+           "the absolute difference between James' regression and the averaged Ba/Ca af the subsamples",
+           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}
+           ),
+    
+    html.P([
+    "Chlorophyll data: ",
+    html.A(
+        "NASA MODIS-Aqua (2022)",
+        href="https://doi.org/10.5067/AQUA/MODIS/L3M/CHL/2022",
+        target="_blank",
+        style={"textDecoration": "underline"}
+    ),
+    ", hosted by NASA OB.DAAC"
+], style={'textAlign': 'center', 'fontSize': '14px', 'marginTop': '30px'}),
+    
+    html.P([
+    "Bathymetry data: ",
+    html.A(
+        "NOAA Tsunami DEM for the Galápagos region",
+        href="https://www.ngdc.noaa.gov/mgg/inundation/",
+        target="_blank",
+        style={"textDecoration": "underline"}
+    ),
+    ", courtesy of NOAA NCEI and the Pacific Marine Environmental Lab"
+], style={'textAlign': 'center', 'fontSize': '14px'}),
+    
+    html.P("For more information please contact the developer at jackson.vaughn@bristol.ac.uk",
+           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'})
 ])
 
 if __name__ == '__main__':
