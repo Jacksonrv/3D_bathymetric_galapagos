@@ -130,7 +130,11 @@ app.layout = html.Div([
            "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
     
-    dcc.Graph(figure=fig, style={'height': '90vh'}),
+    dcc.Loading(
+    type="circle",
+    fullscreen=True,
+    children=dcc.Graph(figure=fig, style={'height': '90vh'})
+    ),
 
     html.P(["Chlorophyll-a values are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
@@ -173,3 +177,5 @@ if __name__ == '__main__':
     #Add ability to choose colormap
     #Group points to display tooltips of all points there. 
     #Add at5009 bathymetry data
+    
+    
