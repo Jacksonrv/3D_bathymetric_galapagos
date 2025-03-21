@@ -29,7 +29,7 @@ def download_and_load_csv(url, filename):
 
 # === URLs for preprocessed data ===
 urls = {
-    "chl_log": "https://www.dropbox.com/scl/fi/1ams9jg3jqy7rjzl3d7z7/chl_log.npy?rlkey=r3rq36feckk3wqifcgrouup8g&st=0ix4v6bt&dl=1",
+    "chl_log": "https://www.dropbox.com/scl/fi/w9dx4j4g0tjirwkbcoiar/chl_log.npy?rlkey=bvq8tbnx6lxd2ucqfwlaczfs9&st=z8qys7vc&dl=0",
     "corals": "https://www.dropbox.com/scl/fi/1oycf677oxyie6lrtnq74/corals.csv?rlkey=9qibrb6348irh6s19lr38emzp&st=kausdzf9&dl=1",
     "elev": "https://www.dropbox.com/scl/fi/7vzvtva595k7mmxkvvxlx/elev_cropped.npy?rlkey=3kfopjzpur7sv1azqwhukdc54&st=f28g6pqq&dl=1",
     "land": "https://www.dropbox.com/scl/fi/bi95vjo61x0pe7b3wd5g3/land_elev.npy?rlkey=suo8bfp7ognb06xaa7dg5izcw&st=xpsvmdmp&dl=1",
