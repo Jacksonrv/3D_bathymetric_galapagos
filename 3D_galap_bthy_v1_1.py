@@ -132,8 +132,8 @@ app.layout = html.Div([
     
     dcc.Graph(figure=fig, style={'height': '90vh'}),
 
-    html.P(["Chlorophyll-a values are log-scaled. Barium residuals are calculated as",
-           "the absolute difference between James' regression and the averaged Ba/Ca af the subsamples"],
+    html.P(["Chlorophyll-a values are log-scaled. Barium residuals are calculated as ",
+           "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}
            ),
     
@@ -152,7 +152,7 @@ app.layout = html.Div([
     "Bathymetry data: ",
     html.A(
         "NOAA Tsunami DEM for the Galápagos region",
-        href="https://www.ngdc.noaa.gov/mgg/inundation/",
+        href="https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ngdc.mgg.dem:11516",
         target="_blank",
         style={"textDecoration": "underline"}
     ),
