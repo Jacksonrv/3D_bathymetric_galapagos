@@ -89,12 +89,15 @@ residuals_log = np.log10(np.where(residuals > 0, residuals, np.nan))
 
 
 
-ds = xr.open_dataset("bathymetry.nc", engine="netcdf4")
+ds = xr.open_dataset("bathymetry.nc", engine="netcdf4", decode_cf=False)
 
 #Convert to float32 to reduce memory consumption
 lon = ds['lon'].values.astype(np.float32)  
 lat = ds['lat'].values.astype(np.float32)
 elev = ds['Band1'].values.astype(np.float32)  
+
+ds.close()
+del ds
 
 #Downsample data for further memory efficiency
 step = 20  #Increase to reduce memory usage
@@ -265,11 +268,6 @@ app.layout = html.Div([
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
-
-
-
 
 
 
