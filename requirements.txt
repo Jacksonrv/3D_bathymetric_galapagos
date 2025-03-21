@@ -2,9 +2,4 @@ dash
 plotly
 pandas
 numpy
-xarray
-netCDF4
 requests
-scipy
-openpyxl
-flask
