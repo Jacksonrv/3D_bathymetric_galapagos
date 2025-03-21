@@ -92,8 +92,8 @@ bathymetry_surface = go.Surface(
         title="Chlorophyll-a (mg/m³)<br>04.07.2011-04.08.2011",
         x=-0.15,
         len=0.75,
-        tickvals=[np.log10(v) for v in [0.01, 0.1, 1, 10]],
-        ticktext=['0.01', '0.1', '1', '10']
+        tickvals=[np.log10(v) for v in [0.5, 1, 8]],
+        ticktext=['0.5', '1', '8']
     ),
     opacity=0.5,
     name=""
@@ -110,7 +110,6 @@ land_surface = go.Surface(
 
 fig = go.Figure(data=[bathymetry_surface, land_surface, scatter_layer, scatter_layer_invisible])
 fig.update_layout(
-    title="Galapagos",
     scene=dict(
         xaxis_title="Longitude",
         yaxis_title="Latitude",
@@ -127,14 +126,14 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
 
-    html.P("This interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations.",
+    html.P("Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations.",
            "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details",
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
     
     dcc.Graph(figure=fig, style={'height': '90vh'}),
 
-    html.P("Chlorophyll-a values are log-scaled. Barium residuals are calculated as",
-           "the absolute difference between James' regression and the averaged Ba/Ca af the subsamples",
+    html.P(["Chlorophyll-a values are log-scaled. Barium residuals are calculated as",
+           "the absolute difference between James' regression and the averaged Ba/Ca af the subsamples"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}
            ),
     
