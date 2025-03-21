@@ -126,7 +126,7 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
 
-    html.P(["Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations.",
+    html.P(["Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations. ",
            "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
     
