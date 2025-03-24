@@ -127,7 +127,7 @@ app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
 
     html.P(["Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations. ",
-           "Scroll to zoom, left click to rotate, right click to zoom. Hover over points to see details"],
+           "Scroll to zoom, left click to rotate, right click to pan. Hover over points to see details"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
     
     dcc.Loading(
@@ -136,7 +136,7 @@ app.layout = html.Div([
     children=dcc.Graph(figure=fig, style={'height': '90vh'})
     ),
 
-    html.P(["Chlorophyll-a values are log-scaled. Barium residuals are calculated as ",
+    html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}
            ),
@@ -177,5 +177,7 @@ if __name__ == '__main__':
     #Add ability to choose colormap
     #Group points to display tooltips of all points there. 
     #Add at5009 bathymetry data
+    #Fix loading screen
+    #Add marker differences
     
     
