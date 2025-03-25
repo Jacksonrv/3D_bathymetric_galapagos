@@ -32,7 +32,7 @@ urls = {
     "chl_log": "https://www.dropbox.com/scl/fi/yrpyq75j5mky1l4yj9tzu/chl_log.npy?rlkey=zu7osjr41uz82matcf96hxq5o&st=uzht8bdz&dl=1",
     "corals": "https://www.dropbox.com/scl/fi/1oycf677oxyie6lrtnq74/corals.csv?rlkey=9qibrb6348irh6s19lr38emzp&st=kausdzf9&dl=1",
     "elev": "https://www.dropbox.com/scl/fi/lg4zvnex8jfa2mx7mdv0d/elev_cropped.npy?rlkey=v7u36a1434cjknbvoamj9cjfn&st=2btu3v17&dl=1",
-    "land": "https://www.dropbox.com/scl/fi/su6nnm3as2ng58a2uorjw/land_elev.npy?rlkey=sbcild64c7w2scawcl92zgvsa&st=t7jgfo4y&dl=1",
+    "land": "https://www.dropbox.com/scl/fi/tp36c56p3jvjl0ef7fraw/land_elev_hd.npy?rlkey=0wu0pr352tlq70fwvqelfx5ts&st=wixhg5wv&dl=0", #"https://www.dropbox.com/scl/fi/su6nnm3as2ng58a2uorjw/land_elev.npy?rlkey=sbcild64c7w2scawcl92zgvsa&st=t7jgfo4y&dl=1",
     "lat": "https://www.dropbox.com/scl/fi/bizejcjeovjje2fzwf6hn/lat_cropped.npy?rlkey=vk2ao8ugohlt537trgcrvnh7f&st=giw4zdi8&dl=1",
     "lon": "https://www.dropbox.com/scl/fi/6benhekucshvah4clj290/lon_cropped.npy?rlkey=snxq4awe9lyjgvvkzb7qag9ev&st=7pfep1ey&dl=1"
 }
@@ -179,5 +179,8 @@ if __name__ == '__main__':
     #Add at5009 bathymetry data
     #Fix loading screen
     #Add marker differences
+    #Add a different marker for sediment core data, and add image in the tooltips
+    #Add vertical exaggeration - or fix to true scale?
+    #Add readme
     
     
