@@ -33,7 +33,7 @@ urls = {
     "chl_log": "https://www.dropbox.com/scl/fi/w9dx4j4g0tjirwkbcoiar/chl_log.npy?rlkey=bvq8tbnx6lxd2ucqfwlaczfs9&st=a79n2r7o&dl=1",
     "corals": "https://www.dropbox.com/scl/fi/1oycf677oxyie6lrtnq74/corals.csv?rlkey=9qibrb6348irh6s19lr38emzp&st=bbyspm61&dl=1",
     "elev": "https://www.dropbox.com/scl/fi/lg4zvnex8jfa2mx7mdv0d/elev_cropped.npy?rlkey=v7u36a1434cjknbvoamj9cjfn&st=spa7ar4p&dl=1",
-    "land": "https://www.dropbox.com/scl/fi/su6nnm3as2ng58a2uorjw/land_elev.npy?rlkey=sbcild64c7w2scawcl92zgvsa&st=kc8jz9p4&dl=1",
+    "land": "https://www.dropbox.com/scl/fi/su6nnm3as2ng58a2uorjw/land_elev.npy?rlkey=sbcild64c7w2scawcl92zgvsa&st=pyu86poz&dl=1",
     "lat": "https://www.dropbox.com/scl/fi/bizejcjeovjje2fzwf6hn/lat_cropped.npy?rlkey=vk2ao8ugohlt537trgcrvnh7f&st=900zir8m&dl=1",
     "lon": "https://www.dropbox.com/scl/fi/6benhekucshvah4clj290/lon_cropped.npy?rlkey=snxq4awe9lyjgvvkzb7qag9ev&st=rbjkyusk&dl=1"
 }
