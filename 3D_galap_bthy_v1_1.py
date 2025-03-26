@@ -28,14 +28,16 @@ def download_and_load_csv(url, filename):
     return pd.read_csv(filename)
 
 # === URLs for preprocessed data ===
+#URLs must end with =1
 urls = {
-    "chl_log": "https://www.dropbox.com/scl/fi/yrpyq75j5mky1l4yj9tzu/chl_log.npy?rlkey=zu7osjr41uz82matcf96hxq5o&st=uzht8bdz&dl=1",
+    "chl_log": "",
     "corals": "https://www.dropbox.com/scl/fi/1oycf677oxyie6lrtnq74/corals.csv?rlkey=9qibrb6348irh6s19lr38emzp&st=kausdzf9&dl=1",
-    "elev": "https://www.dropbox.com/scl/fi/lg4zvnex8jfa2mx7mdv0d/elev_cropped.npy?rlkey=v7u36a1434cjknbvoamj9cjfn&st=2btu3v17&dl=1",
-    "land": "https://www.dropbox.com/scl/fi/su6nnm3as2ng58a2uorjw/land_elev.npy?rlkey=sbcild64c7w2scawcl92zgvsa&st=t7jgfo4y&dl=1",
-    "lat": "https://www.dropbox.com/scl/fi/bizejcjeovjje2fzwf6hn/lat_cropped.npy?rlkey=vk2ao8ugohlt537trgcrvnh7f&st=giw4zdi8&dl=1",
-    "lon": "https://www.dropbox.com/scl/fi/6benhekucshvah4clj290/lon_cropped.npy?rlkey=snxq4awe9lyjgvvkzb7qag9ev&st=7pfep1ey&dl=1"
+    "elev": "https://www.dropbox.com/scl/fi/lg4zvnex8jfa2mx7mdv0d/elev_cropped.npy?rlkey=v7u36a1434cjknbvoamj9cjfn&st=4n46rcd3&dl=1",
+    "land": "https://www.dropbox.com/scl/fi/su6nnm3as2ng58a2uorjw/land_elev.npy?rlkey=sbcild64c7w2scawcl92zgvsa&st=dzzuq7u2&dl=1",
+    "lat": "https://www.dropbox.com/scl/fi/bizejcjeovjje2fzwf6hn/lat_cropped.npy?rlkey=vk2ao8ugohlt537trgcrvnh7f&st=4qxlve9q&dl=1",
+    "lon": "https://www.dropbox.com/scl/fi/6benhekucshvah4clj290/lon_cropped.npy?rlkey=snxq4awe9lyjgvvkzb7qag9ev&st=xiszrgi7&dl=1"
 }
+
 
 # === Download and load data ===
 lon_cropped = download_and_load_npy(urls["lon"], "lon_cropped.npy")
@@ -183,5 +185,6 @@ if __name__ == '__main__':
     #Add vertical exaggeration - or fix to true scale?
     #Add readme
     #Add background
+    #Look into using yt for chlorophyll data
     
     
