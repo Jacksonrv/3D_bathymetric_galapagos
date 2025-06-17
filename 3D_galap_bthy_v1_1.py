@@ -30,12 +30,12 @@ def download_and_load_csv(url, filename):
 # === URLs for preprocessed data ===
 #URLs must end with =1
 urls = {
-    "chl_log": "https://www.dropbox.com/scl/fi/l6r4z084e9vc7jrxwqaax/chl_log.npy?rlkey=4413078s7fjxx3kkibpx46nc2&st=o1b4t8hw&dl=1",
+    "chl_log": "https://www.dropbox.com/scl/fi/l6r4z084e9vc7jrxwqaax/chl_log.npy?rlkey=4413078s7fjxx3kkibpx46nc2&st=p8ogpvjv&dl=1",
     "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=8qo9ftua&dl=1",
-    "elev": "https://www.dropbox.com/scl/fi/pzc3ma0fxohw02acl70p2/elev_cropped.npy?rlkey=c24riiy3awxnrpnqo4n4jm6yi&st=ir44wvam&dl=1",
-    "land": "https://www.dropbox.com/scl/fi/300jkfyx7tnbzqn725977/land_elev.npy?rlkey=oe6y5rdh71lqp1yh3l452bro2&st=g618fepj&dl=1",
-    "lat": "https://www.dropbox.com/scl/fi/u0i7pctzjjz2zq3wxzk9i/lat_cropped.npy?rlkey=4rgk2ztu61wu5nbuwg8hvurc9&st=rn9u8zwh&dl=1",
-    "lon": "https://www.dropbox.com/scl/fi/3i9nt38ysk592vbh4qulb/lon_cropped.npy?rlkey=7486zx7fupfx70zf7ejjf1bak&st=y3gooynd&dl=1"
+    "elev": "https://www.dropbox.com/scl/fi/pzc3ma0fxohw02acl70p2/elev_cropped.npy?rlkey=c24riiy3awxnrpnqo4n4jm6yi&st=erw70wjs&dl=1",
+    "land": "https://www.dropbox.com/scl/fi/300jkfyx7tnbzqn725977/land_elev.npy?rlkey=oe6y5rdh71lqp1yh3l452bro2&st=c2sld1oy&dl=1",
+    "lat": "https://www.dropbox.com/scl/fi/u0i7pctzjjz2zq3wxzk9i/lat_cropped.npy?rlkey=4rgk2ztu61wu5nbuwg8hvurc9&st=v7gniso6&dl=1",
+    "lon": "https://www.dropbox.com/scl/fi/3i9nt38ysk592vbh4qulb/lon_cropped.npy?rlkey=7486zx7fupfx70zf7ejjf1bak&st=omk27lkg&dl=1"
 }
 
 
