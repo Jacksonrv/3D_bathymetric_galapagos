@@ -53,7 +53,7 @@ df = download_and_load_csv(urls["corals"], "corals.csv")
 scatter_layer = go.Scatter3d(
     x=df['Longitude'], 
     y=df['Latitude'], 
-    z=df['Depth (m)'], 
+    z=df['Depth'], 
     mode='markers',
     marker=dict(
         size=5, 
@@ -74,7 +74,7 @@ scatter_layer = go.Scatter3d(
 scatter_layer_invisible = go.Scatter3d(
     x=df['Longitude'], 
     y=df['Latitude'], 
-    z=df['Depth (m)'], 
+    z=df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
     text=df['Group'],
