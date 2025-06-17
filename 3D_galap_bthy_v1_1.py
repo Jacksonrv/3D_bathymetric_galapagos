@@ -31,7 +31,7 @@ def download_and_load_csv(url, filename):
 #URLs must end with =1
 urls = {
     "chl_log": "https://www.dropbox.com/scl/fi/l6r4z084e9vc7jrxwqaax/chl_log.npy?rlkey=4413078s7fjxx3kkibpx46nc2&st=p8ogpvjv&dl=1",
-    "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=8qo9ftua&dl=1",
+    "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=sz3sgmp5&dl=1",
     "elev": "https://www.dropbox.com/scl/fi/pzc3ma0fxohw02acl70p2/elev_cropped.npy?rlkey=c24riiy3awxnrpnqo4n4jm6yi&st=erw70wjs&dl=1",
     "land": "https://www.dropbox.com/scl/fi/300jkfyx7tnbzqn725977/land_elev.npy?rlkey=oe6y5rdh71lqp1yh3l452bro2&st=c2sld1oy&dl=1",
     "lat": "https://www.dropbox.com/scl/fi/u0i7pctzjjz2zq3wxzk9i/lat_cropped.npy?rlkey=4rgk2ztu61wu5nbuwg8hvurc9&st=v7gniso6&dl=1",
@@ -47,7 +47,7 @@ land_elev = download_and_load_npy(urls["land"], "land_elev.npy")
 chl_log = download_and_load_npy(urls["chl_log"], "chl_log.npy")
 
 df = download_and_load_csv(urls["corals"], "corals.csv")
-residuals_log = np.log10(np.where(df['Residuals_Avg'] > 0, df['Residuals_Avg'], np.nan))
+# residuals_log = np.log10(np.where(df['Residuals_Avg'] > 0, df['Residuals_Avg'], np.nan))
 
 # === Plotting layers ===
 scatter_layer = go.Scatter3d(
@@ -57,16 +57,16 @@ scatter_layer = go.Scatter3d(
     mode='markers',
     marker=dict(
         size=5, 
-        color=residuals_log,
-        colorscale='Peach',
-        opacity=0.8,
-        colorbar=dict(
-            title="Barium<br>Residuals",
-            tickvals=[np.log10(v) for v in [0.01, 0.1, 1, 10]],
-            ticktext=['0.01', '0.1', '1', '10']
-        )
+        color='purple',#residuals_log,
+        #colorscale='Peach',
+        opacity=0.9,
+        # colorbar=dict(
+        #     title="Barium<br>Residuals",
+        #     tickvals=[np.log10(v) for v in [0.01, 0.1, 1, 10]],
+        #     ticktext=['0.01', '0.1', '1', '10']
+        # )
     ),
-    text=df['J_ID'],
+    text=df['Group'],
     hoverinfo='skip',
     name=""
 )
@@ -77,8 +77,8 @@ scatter_layer_invisible = go.Scatter3d(
     z=df['Depth (m)'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
-    text=df['hover_text'],
-    hoverinfo='text',
+    text=df['Group'],
+    hoverinfo='text',#'text',
     name=""
 )
 
