@@ -113,7 +113,7 @@ land_surface = go.Surface(
     name=""
 )
 
-fig = go.Figure(data=[bathymetry_surface, land_surface, scatter_layer, scatter_layer_invisible])
+fig = go.Figure(data=[scatter_layer_invisible, bathymetry_surface, land_surface, scatter_layer])
 fig.update_layout(
     scene=dict(
         xaxis_title="Longitude",
