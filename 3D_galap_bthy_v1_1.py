@@ -148,7 +148,7 @@ def display_hover(hoverData):
 
         pt = hoverData["points"][0]
         bbox = pt["bbox"]
-        num = pt["pointIndex"]
+        num = pt["pointNumber"]
         df_row = df.iloc[num]
 
         img_src = df_row['img_src']
@@ -156,7 +156,7 @@ def display_hover(hoverData):
         children = [
             html.Div([
                 html.Img(src=img_src, style={"width": "100%"}),
-                html.H2(f"{df_row['Group']}", style={"color": "darkblue", "overflow-wrap": "break-word"})
+                html.H2(f"{df_row['img_src']}", style={"color": "darkblue", "overflow-wrap": "break-word"})
             ], style={'width': '200px', 'white-space': 'normal'})
         ]
 
