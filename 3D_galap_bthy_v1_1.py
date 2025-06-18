@@ -137,7 +137,6 @@ def serve_static(path):
 
 @app.callback(
     Output("graph-tooltip", "show"),
-    Output("graph-tooltip", "bbox"),
     Output("graph-tooltip", "children"),
     Input("graph-3d", "hoverData"),
 )
@@ -147,7 +146,6 @@ def display_hover(hoverData):
             return False, no_update, no_update
 
         pt = hoverData["points"][0]
-        bbox = pt["bbox"]
         num = pt["pointNumber"]
         df_row = df.iloc[num]
 
@@ -156,11 +154,11 @@ def display_hover(hoverData):
         children = [
             html.Div([
                 html.Img(src=img_src, style={"width": "100%"}),
-                html.H2(f"{df_row['img_src']}", style={"color": "darkblue", "overflow-wrap": "break-word"})
-            ], style={'width': '200px', 'white-space': 'normal'})
+                html.H2("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+            ], style={'width': '400px', 'white-space': 'normal'})
         ]
 
-        return True, bbox, children
+        return True, children
 
     except Exception as e:
         print("ERROR IN TOOLTIP CALLBACK:", e)
