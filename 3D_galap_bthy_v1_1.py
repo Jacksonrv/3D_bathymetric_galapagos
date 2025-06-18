@@ -15,6 +15,7 @@ import requests
 import os
 from dash import Output, Input, no_update
 from flask import send_from_directory
+import traceback
 
 
 def download_and_load_npy(url, filename):
@@ -56,7 +57,7 @@ df = download_and_load_csv(urls["corals"], "corals.csv")
 scatter_layer = go.Scatter3d(
     x=df['Longitude'], 
     y=df['Latitude'], 
-    z=-df['Depth'], 
+    z=df['Depth'], 
     mode='markers',
     marker=dict(
         size=5, 
@@ -75,7 +76,7 @@ scatter_layer = go.Scatter3d(
 scatter_layer_invisible = go.Scatter3d(
     x=df['Longitude'], 
     y=df['Latitude'], 
-    z=-df['Depth'], 
+    z=df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
     name=""
@@ -141,25 +142,30 @@ def serve_static(path):
     Input("graph-3d", "hoverData"),
 )
 def display_hover(hoverData):
-    if hoverData is None:
+    try:
+        if hoverData is None:
+            return False, no_update, no_update
+
+        pt = hoverData["points"][0]
+        bbox = pt["bbox"]
+        num = pt["pointIndex"]
+        df_row = df.iloc[num]
+
+        img_src = df_row['img_src']
+
+        children = [
+            html.Div([
+                html.Img(src=img_src, style={"width": "100%"}),
+                html.H2(f"{df_row['Group']}", style={"color": "darkblue", "overflow-wrap": "break-word"})
+            ], style={'width': '200px', 'white-space': 'normal'})
+        ]
+
+        return True, bbox, children
+
+    except Exception as e:
+        print("ERROR IN TOOLTIP CALLBACK:", e)
+        traceback.print_exc()
         return False, no_update, no_update
-
-    pt = hoverData["points"][0]
-    bbox = pt["bbox"]
-    num = pt["pointIndex"]
-
-    df_row = df.iloc[num]
-
-    img_src = df_row['img_src']
-
-    children = [
-        html.Div([
-            html.Img(src=img_src, style={"width": "100%"}),
-            html.H2(f"{df_row['Group']}", style={"color": "darkblue", "overflow-wrap": "break-word"})
-        ], style={'width': '200px', 'white-space': 'normal'})
-    ]
-
-    return True, bbox, children
 
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
