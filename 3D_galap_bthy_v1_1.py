@@ -166,7 +166,7 @@ def display_hover_or_click(hoverData, clickData, device_type):
 
         if match.empty:
             print(f"Incoming x: {x}, y: {y}, z: {z}")
-            int(df[["Longitude", "Latitude", "Depth"]].head())
+            print(df[["Longitude", "Latitude", "Depth"]].head())
             print("No matching point found!")
             return False, no_update
 
