@@ -137,20 +137,38 @@ def serve_static(path):
 
 @app.callback(
     Output("graph-tooltip", "show"),
-    Output("graph-tooltip", "bbox"),
     Output("graph-tooltip", "children"),
     Input("graph-3d", "hoverData"),
+    Input("graph-3d", "clickData"),
+    Input("device-type", "data"),
 )
-def display_hover(hoverData):
+def display_hover_or_click(hoverData, clickData, device_type):
     try:
-        if hoverData is None:
-            return False, no_update, no_update
+        if device_type == 'mobile':
+            trigger_data = clickData
+        else:
+            trigger_data = hoverData
 
-        pt = hoverData["points"][0]
-        # bbox = pt["bbox"]
-        num = pt["pointNumber"]
-        df_row = df.iloc[num]
+        if trigger_data is None:
+            return False, no_update
 
+        pt = trigger_data["points"][0]
+        x = pt["x"]
+        y = pt["y"]
+        z = pt["z"]
+
+        # Match row by coordinates
+        match = df[
+            (abs(df["Longitude"] - x) < 1e-6) &
+            (abs(df["Latitude"] - y) < 1e-6) &
+            (abs(df["Depth"] - z) < 1e-6)  
+        ]
+
+        if match.empty:
+            print("No matching point found!")
+            return False, no_update
+
+        df_row = match.iloc[0]
         img_src = df_row['img_src']
 
         children = [
@@ -160,13 +178,22 @@ def display_hover(hoverData):
             ], style={'width': '400px', 'white-space': 'normal'})
         ]
 
-
-        return True, no_update, children
+        return True, children
 
     except Exception as e:
         print("ERROR IN TOOLTIP CALLBACK:", e)
-        traceback.print_exc()
-        return False, no_update, no_update
+        return False, no_update
+
+app.clientside_callback(
+    """
+    function(n_intervals) {
+        var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        return isMobile ? 'mobile' : 'desktop';
+    }
+    """,
+    Output('device-type', 'data'),
+    Input('device-check-trigger', 'n_intervals')
+)
 
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
@@ -182,6 +209,14 @@ app.layout = html.Div([
 
     ),
     dcc.Tooltip(id="graph-tooltip"),
+
+    dcc.Store(id='device-type'),
+    dcc.Interval(id="device-check-trigger", interval=100, n_intervals=0, max_intervals=1),
+
+    
+    
+    
+    
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
@@ -216,6 +251,9 @@ app.layout = html.Div([
 
         
     ])
+
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
