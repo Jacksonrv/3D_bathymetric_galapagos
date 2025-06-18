@@ -51,39 +51,30 @@ land_elev = download_and_load_npy(urls["land"], "land_elev.npy")
 chl_log = download_and_load_npy(urls["chl_log"], "chl_log.npy")
 df = download_and_load_csv(urls["corals"], "corals.csv")
 # residuals_log = np.log10(np.where(df['Residuals_Avg'] > 0, df['Residuals_Avg'], np.nan))
-
 # === Plotting layers ===
 scatter_layer = go.Scatter3d(
-    x=df['Longitude'], 
-    y=df['Latitude'], 
-    z=df['Depth'], 
+    x=df['Longitude'],
+    y=df['Latitude'],
+    z=df['Depth'],
     mode='markers',
     marker=dict(
-        size=5, 
-        color='purple',#residuals_log,
-        #colorscale='Peach',
-        opacity=0.9,
-        # colorbar=dict(
-        #     title="Barium<br>Residuals",
-        #     tickvals=[np.log10(v) for v in [0.01, 0.1, 1, 10]],
-        #     ticktext=['0.01', '0.1', '1', '10']
-        # )
+        size=5,
+        color='purple',
+        opacity=0.9
     ),
+    customdata=df.index,
     name=""
 )
 
 scatter_layer_invisible = go.Scatter3d(
-    x=df['Longitude'], 
-    y=df['Latitude'], 
-    z=df['Depth'], 
+    x=df['Longitude'],
+    y=df['Latitude'],
+    z=df['Depth'],
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
     customdata=df.index,
     name=""
 )
-
-
-
 
 bathymetry_surface = go.Surface(
     z=elev_cropped,
@@ -91,7 +82,7 @@ bathymetry_surface = go.Surface(
     y=lat_cropped,
     surfacecolor=chl_log,
     colorscale='Viridis',
-    cmin=np.nanmin(chl_log), 
+    cmin=np.nanmin(chl_log),
     cmax=np.nanmax(chl_log),
     colorbar=dict(
         title="Chlorophyll-a (mg/m³)<br>04.07.2011-04.08.2011",
@@ -113,7 +104,13 @@ land_surface = go.Surface(
     name=""
 )
 
-fig = go.Figure(data=[scatter_layer_invisible, bathymetry_surface, land_surface, scatter_layer])
+fig = go.Figure(data=[
+    scatter_layer_invisible,  # Must be first
+    scatter_layer,
+    bathymetry_surface,
+    land_surface
+])
+
 fig.update_layout(
     scene=dict(
         xaxis_title="Longitude",
@@ -126,13 +123,58 @@ fig.update_layout(
     showlegend=False
 )
 
+# Disable hoverinfo on layers that shouldn't produce hover text
+scatter_layer.update(hoverinfo="none", hovertemplate=None)
+bathymetry_surface.update(hoverinfo="none", hovertemplate=None)
+land_surface.update(hoverinfo="none", hovertemplate=None)
+
 # ==== Dash App ====
 app = dash.Dash(__name__)
-
-server = app.server  # Dash wraps Flask
+server = app.server
 @server.route('/static/<path:path>')
 def serve_static(path):
     return send_from_directory('static', path)
+
+app.layout = html.Div(className="container", children=[
+    html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
+
+    html.P([
+        "Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations. ",
+        "Scroll to zoom, left click to rotate, right click to pan. Hover over points to see details."
+    ], style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
+
+    dcc.Loading(
+        type="circle",
+        fullscreen=True,
+        children=[
+            dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'}),
+            dcc.Tooltip(id="graph-tooltip", direction='bottom')
+        ]
+    ),
+
+    html.P([
+        "Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
+        "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"
+    ], style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
+
+    html.P([
+        "Chlorophyll data: ",
+        html.A("NASA MODIS-Aqua (2022)", href="https://doi.org/10.5067/AQUA/MODIS/L3M/CHL/2022",
+               target="_blank", style={"textDecoration": "underline"}),
+        ", hosted by NASA OB.DAAC"
+    ], style={'textAlign': 'center', 'fontSize': '14px', 'marginTop': '30px'}),
+
+    html.P([
+        "Bathymetry data: ",
+        html.A("NOAA Tsunami DEM for the Galápagos region",
+               href="https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ngdc.mgg.dem:11516",
+               target="_blank", style={"textDecoration": "underline"}),
+        ", courtesy of NOAA NCEI and the Pacific Marine Environmental Lab"
+    ], style={'textAlign': 'center', 'fontSize': '14px'}),
+
+    html.P("For more information please contact the developer at jackson.vaughn@bristol.ac.uk",
+           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'})
+])
 
 @app.callback(
     Output("graph-tooltip", "show"),
@@ -146,16 +188,15 @@ def display_hover(hoverData):
             return False, no_update, no_update
 
         pt = hoverData["points"][0]
-        index = pt["customdata"]  # Get the row index
-        bbox = pt["bbox"]         # Tooltip positioning (this you *do* have!)
-
+        bbox = pt["bbox"]
+        index = pt["customdata"]
         df_row = df.loc[index]
         img_src = df_row['img_src']
 
         children = [
             html.Div([
                 html.Img(src=img_src, style={"width": "100%"}),
-                html.P("Corals located here are shown in green", 
+                html.P("Corals located here are shown in green",
                        style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
             ], style={'width': '400px', 'white-space': 'normal'})
         ]
@@ -168,54 +209,6 @@ def display_hover(hoverData):
         traceback.print_exc()
         return False, no_update, no_update
 
-app.layout = html.Div([
-    html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
-
-    html.P(["Hello wonderful supervisors - this interactive plot displays stylasterid coral sample locations and satellite derived chlorophyll concentrations. ",
-           "Scroll to zoom, left click to rotate, right click to pan. Hover over points to see details."],
-           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
-    
-    dcc.Loading(
-        type="circle",
-        fullscreen=True,
-        children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
-
-    ),
-    dcc.Tooltip(id="graph-tooltip"),
-
-    html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
-           "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
-           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}
-           ),
-    
-    html.P([
-    "Chlorophyll data: ",
-    html.A(
-        "NASA MODIS-Aqua (2022)",
-        href="https://doi.org/10.5067/AQUA/MODIS/L3M/CHL/2022",
-        target="_blank",
-        style={"textDecoration": "underline"}
-    ),
-    ", hosted by NASA OB.DAAC"
-    ], style={'textAlign': 'center', 'fontSize': '14px', 'marginTop': '30px'}),
-        
-        html.P([
-        "Bathymetry data: ",
-        html.A(
-            "NOAA Tsunami DEM for the Galápagos region",
-            href="https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ngdc.mgg.dem:11516",
-            target="_blank",
-            style={"textDecoration": "underline"}
-        ),
-        ", courtesy of NOAA NCEI and the Pacific Marine Environmental Lab"
-    ], style={'textAlign': 'center', 'fontSize': '14px'}),
-        
-        html.P("For more information please contact the developer at jackson.vaughn@bristol.ac.uk",
-               style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
-        
-
-        
-    ])
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
