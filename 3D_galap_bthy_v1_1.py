@@ -137,16 +137,14 @@ def serve_static(path):
 
 @app.callback(
     Output("graph-tooltip", "show"),
-    Output("graph-tooltip", "bbox"),
     Output("graph-tooltip", "children"),
     Input("graph-3d", "hoverData"),
 )
 def display_hover(hoverData):
     if hoverData is None:
-        return False, no_update, no_update
+        return False, no_update
 
     hover_data = hoverData["points"][0]
-    bbox = hover_data["bbox"]
     num = hover_data["pointNumber"]
 
     df_row = df.iloc[num]
@@ -159,7 +157,7 @@ def display_hover(hoverData):
         ])
     ]
 
-    return True, bbox, children
+    return True, children
 
 # @app.callback(
 #     Output("graph-tooltip", "show"),
