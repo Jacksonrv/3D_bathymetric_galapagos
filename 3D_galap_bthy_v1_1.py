@@ -159,12 +159,14 @@ def display_hover_or_click(hoverData, clickData, device_type):
 
         # Match row by coordinates
         match = df[
-            (abs(df["Longitude"] - x) < 1e-6) &
-            (abs(df["Latitude"] - y) < 1e-6) &
-            (abs(df["Depth"] - z) < 1e-6)  
+            (abs(df["Longitude"] - x) < 1e-3) &
+            (abs(df["Latitude"] - y) < 1e-3) &
+            (abs(df["Depth"] - z) < 1e-3)  
         ]
 
         if match.empty:
+            print(f"Incoming x: {x}, y: {y}, z: {z}")
+            int(df[["Longitude", "Latitude", "Depth"]].head())
             print("No matching point found!")
             return False, no_update
 
