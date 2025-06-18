@@ -70,6 +70,7 @@ scatter_layer = go.Scatter3d(
         #     ticktext=['0.01', '0.1', '1', '10']
         # )
     ),
+    customdata=df.index,
     name=""
 )
 
@@ -79,11 +80,9 @@ scatter_layer_invisible = go.Scatter3d(
     z=df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
+    customdata=df.index,
     name=""
 )
-
-scatter_layer.update(hoverinfo="none", hovertemplate=None)
-scatter_layer_invisible.update(hoverinfo="none", hovertemplate=None)
 
 
 bathymetry_surface = go.Surface(
@@ -127,6 +126,9 @@ fig.update_layout(
     showlegend=False
 )
 
+bathymetry_surface.update(hoverinfo="none", hovertemplate=None)
+land_surface.update(hoverinfo="none", hovertemplate=None)
+
 # ==== Dash App ====
 app = dash.Dash(__name__)
 
@@ -148,8 +150,8 @@ def display_hover(hoverData):
 
         pt = hoverData["points"][0]
         bbox = pt["bbox"]
-        num = pt["pointNumber"]
-        df_row = df.iloc[num]
+        index = pt["customdata"]
+        df_row = df.loc[index]
 
         img_src = df_row['img_src']
 
