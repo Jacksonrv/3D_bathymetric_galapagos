@@ -162,7 +162,7 @@ def display_hover_or_click(hoverData, clickData, device_type):
         df["distance"] = (
             (df["Longitude"] - x)**2 +
             (df["Latitude"] - y)**2 +
-            (df["Depth"] - z)**2
+            (-df["Depth"] - z)**2
         ) ** 0.5
 
         min_dist = df["distance"].min()
