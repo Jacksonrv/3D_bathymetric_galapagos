@@ -153,7 +153,8 @@ def display_hover(hoverData):
     children = [
         html.Div([
             html.Img(src=img_src, style={"width": "100px", "display": "block", "margin": "0 auto"}),
-            html.P(f"Group: {df_row['Group']}", style={"font-weight": "bold"})
+            html.P("Corals located here are shown in green",
+                                    style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
         ])
     ]
 
