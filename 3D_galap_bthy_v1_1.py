@@ -35,7 +35,7 @@ def download_and_load_csv(url, filename):
 #URLs must end with =1
 urls = {
     "chl_log": "https://www.dropbox.com/scl/fi/l6r4z084e9vc7jrxwqaax/chl_log.npy?rlkey=4413078s7fjxx3kkibpx46nc2&st=p8ogpvjv&dl=1",
-    "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=2lc1gqd7&dl=1",
+    "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=ivnflb2b&dl=1",
     "elev": "https://www.dropbox.com/scl/fi/pzc3ma0fxohw02acl70p2/elev_cropped.npy?rlkey=c24riiy3awxnrpnqo4n4jm6yi&st=erw70wjs&dl=1",
     "land": "https://www.dropbox.com/scl/fi/300jkfyx7tnbzqn725977/land_elev.npy?rlkey=oe6y5rdh71lqp1yh3l452bro2&st=c2sld1oy&dl=1",
     "lat": "https://www.dropbox.com/scl/fi/u0i7pctzjjz2zq3wxzk9i/lat_cropped.npy?rlkey=4rgk2ztu61wu5nbuwg8hvurc9&st=v7gniso6&dl=1",
@@ -174,6 +174,7 @@ app.layout = html.Div([
         children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
 
     ),
+    dcc.Tooltip(id="graph-tooltip"),
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
