@@ -145,6 +145,9 @@ def display_hover(hoverData):
         if hoverData is None:
             return False, no_update, no_update
 
+        print("HOVERDATA RECEIVED:")
+        print(hoverData)  # <-- THIS IS THE KEY
+
         pt = hoverData["points"][0]
         bbox = pt["bbox"]
         num = pt["pointNumber"]
@@ -158,7 +161,6 @@ def display_hover(hoverData):
                 html.P("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
             ], style={'width': '400px', 'white-space': 'normal'})
         ]
-
 
         return True, bbox, children
 
