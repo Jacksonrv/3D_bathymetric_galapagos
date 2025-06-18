@@ -82,8 +82,7 @@ scatter_layer_invisible = go.Scatter3d(
     name=""
 )
 
-scatter_layer.update(hoverinfo="none", hovertemplate=None)
-scatter_layer_invisible.update(hoverinfo="none", hovertemplate=None)
+
 
 
 bathymetry_surface = go.Surface(
@@ -156,7 +155,7 @@ def display_hover(hoverData):
         children = [
             html.Div([
                 html.Img(src=img_src, style={"width": "100%"}),
-                html.H2("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+                html.P("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
             ], style={'width': '400px', 'white-space': 'normal'})
         ]
 
