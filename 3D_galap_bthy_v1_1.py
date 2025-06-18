@@ -69,8 +69,6 @@ scatter_layer = go.Scatter3d(
         #     ticktext=['0.01', '0.1', '1', '10']
         # )
     ),
-    text=df['hover_text'],
-    hoverinfo='skip',
     name=""
 )
 
@@ -80,8 +78,6 @@ scatter_layer_invisible = go.Scatter3d(
     z=-df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
-    customdata=df['hover_text'],
-    hovertemplate='skip',
     name=""
 )
 
