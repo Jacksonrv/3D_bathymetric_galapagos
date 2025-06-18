@@ -5,7 +5,7 @@ Created on Fri Mar 21 12:51:27 2025
 @author: Jackson Vaughn
 """
 
-from flask import send_from_directory
+
 import dash
 from dash import html, dcc
 import numpy as np
@@ -13,7 +13,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 import os
-
+from dash import Output, Input, no_update
+from flask import send_from_directory
 
 
 def download_and_load_npy(url, filename):
@@ -34,7 +35,7 @@ def download_and_load_csv(url, filename):
 #URLs must end with =1
 urls = {
     "chl_log": "https://www.dropbox.com/scl/fi/l6r4z084e9vc7jrxwqaax/chl_log.npy?rlkey=4413078s7fjxx3kkibpx46nc2&st=p8ogpvjv&dl=1",
-    "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=c0jg6kmd&dl=1",
+    "corals": "https://www.dropbox.com/scl/fi/u49xm0r9oux55odotph73/corals.csv?rlkey=hh8jc2p8v4fteqa35gogc52te&st=2lc1gqd7&dl=1",
     "elev": "https://www.dropbox.com/scl/fi/pzc3ma0fxohw02acl70p2/elev_cropped.npy?rlkey=c24riiy3awxnrpnqo4n4jm6yi&st=erw70wjs&dl=1",
     "land": "https://www.dropbox.com/scl/fi/300jkfyx7tnbzqn725977/land_elev.npy?rlkey=oe6y5rdh71lqp1yh3l452bro2&st=c2sld1oy&dl=1",
     "lat": "https://www.dropbox.com/scl/fi/u0i7pctzjjz2zq3wxzk9i/lat_cropped.npy?rlkey=4rgk2ztu61wu5nbuwg8hvurc9&st=v7gniso6&dl=1",
@@ -48,7 +49,6 @@ lat_cropped = download_and_load_npy(urls["lat"], "lat_cropped.npy")
 elev_cropped = download_and_load_npy(urls["elev"], "elev_cropped.npy")
 land_elev = download_and_load_npy(urls["land"], "land_elev.npy")
 chl_log = download_and_load_npy(urls["chl_log"], "chl_log.npy")
-
 df = download_and_load_csv(urls["corals"], "corals.csv")
 # residuals_log = np.log10(np.where(df['Residuals_Avg'] > 0, df['Residuals_Avg'], np.nan))
 
@@ -81,9 +81,13 @@ scatter_layer_invisible = go.Scatter3d(
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
     customdata=df['hover_text'],
-    hovertemplate='%{customdata}<extra></extra>',
+    hovertemplate='skip',
     name=""
 )
+
+scatter_layer.update(hoverinfo="none", hovertemplate=None)
+scatter_layer_invisible.update(hoverinfo="none", hovertemplate=None)
+
 
 bathymetry_surface = go.Surface(
     z=elev_cropped,
@@ -134,6 +138,33 @@ server = app.server  # Dash wraps Flask
 def serve_static(path):
     return send_from_directory('static', path)
 
+@app.callback(
+    Output("graph-tooltip", "show"),
+    Output("graph-tooltip", "bbox"),
+    Output("graph-tooltip", "children"),
+    Input("graph-3d", "hoverData"),
+)
+def display_hover(hoverData):
+    if hoverData is None:
+        return False, no_update, no_update
+
+    pt = hoverData["points"][0]
+    bbox = pt["bbox"]
+    num = pt["pointIndex"]
+
+    df_row = df.iloc[num]
+
+    img_src = df_row['img_src']
+
+    children = [
+        html.Div([
+            html.Img(src=img_src, style={"width": "100%"}),
+            html.H2(f"{df_row['Group']}", style={"color": "darkblue", "overflow-wrap": "break-word"})
+        ], style={'width': '200px', 'white-space': 'normal'})
+    ]
+
+    return True, bbox, children
+
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
 
@@ -161,22 +192,26 @@ app.layout = html.Div([
         style={"textDecoration": "underline"}
     ),
     ", hosted by NASA OB.DAAC"
-], style={'textAlign': 'center', 'fontSize': '14px', 'marginTop': '30px'}),
-    
-    html.P([
-    "Bathymetry data: ",
-    html.A(
-        "NOAA Tsunami DEM for the Galápagos region",
-        href="https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ngdc.mgg.dem:11516",
-        target="_blank",
-        style={"textDecoration": "underline"}
-    ),
-    ", courtesy of NOAA NCEI and the Pacific Marine Environmental Lab"
-], style={'textAlign': 'center', 'fontSize': '14px'}),
-    
-    html.P("For more information please contact the developer at jackson.vaughn@bristol.ac.uk",
-           style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'})
-])
+    ], style={'textAlign': 'center', 'fontSize': '14px', 'marginTop': '30px'}),
+        
+        html.P([
+        "Bathymetry data: ",
+        html.A(
+            "NOAA Tsunami DEM for the Galápagos region",
+            href="https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ngdc.mgg.dem:11516",
+            target="_blank",
+            style={"textDecoration": "underline"}
+        ),
+        ", courtesy of NOAA NCEI and the Pacific Marine Environmental Lab"
+    ], style={'textAlign': 'center', 'fontSize': '14px'}),
+        
+        html.P("For more information please contact the developer at jackson.vaughn@bristol.ac.uk",
+               style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
+        
+        dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True),
+        dcc.Tooltip(id="graph-tooltip"),
+        
+    ])
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
