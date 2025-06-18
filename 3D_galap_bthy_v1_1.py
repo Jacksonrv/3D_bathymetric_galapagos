@@ -15,7 +15,6 @@ import requests
 import os
 from dash import Output, Input, no_update
 from flask import send_from_directory
-import traceback
 
 
 def download_and_load_npy(url, filename):
@@ -79,6 +78,7 @@ scatter_layer_invisible = go.Scatter3d(
     z=df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
+    customdata=df.index,
     name=""
 )
 
@@ -145,20 +145,18 @@ def display_hover(hoverData):
         if hoverData is None:
             return False, no_update, no_update
 
-        print("HOVERDATA RECEIVED:")
-        print(hoverData)  # <-- THIS IS THE KEY
-
         pt = hoverData["points"][0]
-        bbox = pt["bbox"]
-        num = pt["pointNumber"]
-        df_row = df.iloc[num]
+        index = pt["customdata"]  # Get the row index
+        bbox = pt["bbox"]         # Tooltip positioning (this you *do* have!)
 
+        df_row = df.loc[index]
         img_src = df_row['img_src']
 
         children = [
             html.Div([
                 html.Img(src=img_src, style={"width": "100%"}),
-                html.P("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+                html.P("Corals located here are shown in green", 
+                       style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
             ], style={'width': '400px', 'white-space': 'normal'})
         ]
 
@@ -166,6 +164,7 @@ def display_hover(hoverData):
 
     except Exception as e:
         print("ERROR IN TOOLTIP CALLBACK:", e)
+        import traceback
         traceback.print_exc()
         return False, no_update, no_update
 
