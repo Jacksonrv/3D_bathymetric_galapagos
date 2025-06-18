@@ -157,26 +157,29 @@ def display_hover_or_click(hoverData, clickData, device_type):
         y = pt["y"]
         z = pt["z"]
 
-        # Match row by coordinates
-        match = df[
-            (abs(df["Longitude"] - x) < 1e-3) &
-            (abs(df["Latitude"] - y) < 1e-3) &
-            (abs(df["Depth"] - z) < 1e-3)  
-        ]
+        print(f"Incoming x: {x}, y: {y}, z: {z}")
 
-        if match.empty:
-            print(f"Incoming x: {x}, y: {y}, z: {z}")
-            print(df[["Longitude", "Latitude", "Depth"]].head())
-            print("No matching point found!")
+        df["distance"] = (
+            (df["Longitude"] - x)**2 +
+            (df["Latitude"] - y)**2 +
+            (df["Depth"] - z)**2
+        ) ** 0.5
+
+        min_dist = df["distance"].min()
+        print(f"Min distance: {min_dist}")
+
+        if min_dist > 0.1:  # Adjust based on your data scale
+            print("No nearby point!")
             return False, no_update
 
-        df_row = match.iloc[0]
+        df_row = df.loc[df["distance"].idxmin()]
         img_src = df_row['img_src']
 
         children = [
             html.Div([
                 html.Img(src=img_src, style={"width": "100%"}),
-                html.H2("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+                html.H2("Corals located here are shown in green",
+                        style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
             ], style={'width': '400px', 'white-space': 'normal'})
         ]
 
