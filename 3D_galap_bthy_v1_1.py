@@ -208,7 +208,11 @@ app.layout = html.Div([
         children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
 
     ),
-    dcc.Tooltip(id="graph-tooltip"),
+    # dcc.Tooltip(id="graph-tooltip"),
+    dcc.Tooltip(
+    id="graph-tooltip",
+    style={"position": "fixed", "top": "100px", "left": "100px", "background": "white", "zIndex": 9999}
+    ),
 
     dcc.Store(id='device-type'),
     dcc.Interval(id="device-check-trigger", interval=100, n_intervals=0, max_intervals=1),
