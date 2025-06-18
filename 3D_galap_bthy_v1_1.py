@@ -137,57 +137,83 @@ def serve_static(path):
 
 @app.callback(
     Output("graph-tooltip", "show"),
+    Output("graph-tooltip", "bbox"),
     Output("graph-tooltip", "children"),
     Input("graph-3d", "hoverData"),
-    Input("graph-3d", "clickData"),
-    Input("device-type", "data"),
 )
-def display_hover_or_click(hoverData, clickData, device_type):
-    try:
-        if device_type == 'mobile':
-            trigger_data = clickData
-        else:
-            trigger_data = hoverData
+def display_hover(hoverData):
+    if hoverData is None:
+        return False, no_update, no_update
 
-        if trigger_data is None:
-            return False, no_update
+    hover_data = hoverData["points"][0]
+    bbox = hover_data["bbox"]
+    num = hover_data["pointNumber"]
 
-        pt = trigger_data["points"][0]
-        x = pt["x"]
-        y = pt["y"]
-        z = pt["z"]
+    df_row = df.iloc[num]
+    img_src = df_row["img_src"]
 
-        print(f"Incoming x: {x}, y: {y}, z: {z}")
+    children = [
+        html.Div([
+            html.Img(src=img_src, style={"width": "100px", "display": "block", "margin": "0 auto"}),
+            html.P(f"Group: {df_row['Group']}", style={"font-weight": "bold"})
+        ])
+    ]
 
-        df["distance"] = (
-            (df["Longitude"] - x)**2 +
-            (df["Latitude"] - y)**2 +
-            (-df["Depth"] - z)**2
-        ) ** 0.5
+    return True, bbox, children
 
-        min_dist = df["distance"].min()
-        print(f"Min distance: {min_dist}")
+# @app.callback(
+#     Output("graph-tooltip", "show"),
+#     Output("graph-tooltip", "children"),
+#     Input("graph-3d", "hoverData"),
+#     Input("graph-3d", "clickData"),
+#     Input("device-type", "data"),
+# )
+# def display_hover_or_click(hoverData, clickData, device_type):
+#     try:
+#         if device_type == 'mobile':
+#             trigger_data = clickData
+#         else:
+#             trigger_data = hoverData
 
-        if min_dist > 0.1:  # Adjust based on your data scale
-            print("No nearby point!")
-            return False, no_update
+#         if trigger_data is None:
+#             return False, no_update
 
-        df_row = df.loc[df["distance"].idxmin()]
-        img_src = df_row['img_src']
+#         pt = trigger_data["points"][0]
+#         x = pt["x"]
+#         y = pt["y"]
+#         z = pt["z"]
 
-        children = [
-            html.Div([
-                html.Img(src=img_src, style={"width": "100%"}),
-                html.H2("Corals located here are shown in green",
-                        style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
-            ], style={'width': '400px', 'white-space': 'normal'})
-        ]
+#         print(f"Incoming x: {x}, y: {y}, z: {z}")
 
-        return True, children
+#         df["distance"] = (
+#             (df["Longitude"] - x)**2 +
+#             (df["Latitude"] - y)**2 +
+#             (-df["Depth"] - z)**2
+#         ) ** 0.5
 
-    except Exception as e:
-        print("ERROR IN TOOLTIP CALLBACK:", e)
-        return False, no_update
+#         min_dist = df["distance"].min()
+#         print(f"Min distance: {min_dist}")
+
+#         if min_dist > 0.1:  # Adjust based on your data scale
+#             print("No nearby point!")
+#             return False, no_update
+
+#         df_row = df.loc[df["distance"].idxmin()]
+#         img_src = df_row['img_src']
+
+#         children = [
+#             html.Div([
+#                 html.Img(src=img_src, style={"width": "100%"}),
+#                 html.H2("Corals located here are shown in green",
+#                         style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+#             ], style={'width': '400px', 'white-space': 'normal'})
+#         ]
+
+#         return True, children
+
+#     except Exception as e:
+#         print("ERROR IN TOOLTIP CALLBACK:", e)
+#         return False, no_update
 
 app.clientside_callback(
     """
