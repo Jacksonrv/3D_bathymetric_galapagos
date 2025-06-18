@@ -137,93 +137,36 @@ def serve_static(path):
 
 @app.callback(
     Output("graph-tooltip", "show"),
+    Output("graph-tooltip", "bbox"),
     Output("graph-tooltip", "children"),
     Input("graph-3d", "hoverData"),
 )
 def display_hover(hoverData):
-    if hoverData is None:
-        return False, no_update
+    try:
+        if hoverData is None:
+            return False, no_update, no_update
 
-    hover_data = hoverData["points"][0]
-    num = hover_data["pointNumber"]
+        pt = hoverData["points"][0]
+        bbox = pt["bbox"]
+        num = pt["pointNumber"]
+        df_row = df.iloc[num]
 
-    df_row = df.iloc[num]
-    img_src = df_row["img_src"]
+        img_src = df_row['img_src']
 
-    children = [
-        html.Div([
-            html.Img(src=img_src, style={"width": "100px", "display": "block", "margin": "0 auto"}),
-            html.P("Corals located here are shown in green",
-                                    style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
-        ])
-    ]
+        children = [
+            html.Div([
+                html.Img(src=img_src, style={"width": "100%"}),
+                html.H2("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+            ], style={'width': '400px', 'white-space': 'normal'})
+        ]
 
-    return True, children
 
-# @app.callback(
-#     Output("graph-tooltip", "show"),
-#     Output("graph-tooltip", "children"),
-#     Input("graph-3d", "hoverData"),
-#     Input("graph-3d", "clickData"),
-#     Input("device-type", "data"),
-# )
-# def display_hover_or_click(hoverData, clickData, device_type):
-#     try:
-#         if device_type == 'mobile':
-#             trigger_data = clickData
-#         else:
-#             trigger_data = hoverData
+        return True, bbox, children
 
-#         if trigger_data is None:
-#             return False, no_update
-
-#         pt = trigger_data["points"][0]
-#         x = pt["x"]
-#         y = pt["y"]
-#         z = pt["z"]
-
-#         print(f"Incoming x: {x}, y: {y}, z: {z}")
-
-#         df["distance"] = (
-#             (df["Longitude"] - x)**2 +
-#             (df["Latitude"] - y)**2 +
-#             (-df["Depth"] - z)**2
-#         ) ** 0.5
-
-#         min_dist = df["distance"].min()
-#         print(f"Min distance: {min_dist}")
-
-#         if min_dist > 0.1:  # Adjust based on your data scale
-#             print("No nearby point!")
-#             return False, no_update
-
-#         df_row = df.loc[df["distance"].idxmin()]
-#         img_src = df_row['img_src']
-
-#         children = [
-#             html.Div([
-#                 html.Img(src=img_src, style={"width": "100%"}),
-#                 html.H2("Corals located here are shown in green",
-#                         style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
-#             ], style={'width': '400px', 'white-space': 'normal'})
-#         ]
-
-#         return True, children
-
-#     except Exception as e:
-#         print("ERROR IN TOOLTIP CALLBACK:", e)
-#         return False, no_update
-
-app.clientside_callback(
-    """
-    function(n_intervals) {
-        var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        return isMobile ? 'mobile' : 'desktop';
-    }
-    """,
-    Output('device-type', 'data'),
-    Input('device-check-trigger', 'n_intervals')
-)
+    except Exception as e:
+        print("ERROR IN TOOLTIP CALLBACK:", e)
+        traceback.print_exc()
+        return False, no_update, no_update
 
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
@@ -238,19 +181,7 @@ app.layout = html.Div([
         children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
 
     ),
-    # dcc.Tooltip(id="graph-tooltip"),
-    dcc.Tooltip(
-    id="graph-tooltip",
-    style={"position": "fixed", "top": "100px", "left": "100px", "background": "white", "zIndex": 9999}
-    ),
-
-    dcc.Store(id='device-type'),
-    dcc.Interval(id="device-check-trigger", interval=100, n_intervals=0, max_intervals=1),
-
-    
-    
-    
-    
+    dcc.Tooltip(id="graph-tooltip"),
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
@@ -285,9 +216,6 @@ app.layout = html.Div([
 
         
     ])
-
-
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8050))
