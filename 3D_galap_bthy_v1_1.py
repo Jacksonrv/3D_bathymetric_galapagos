@@ -169,9 +169,10 @@ app.layout = html.Div([
            style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
     
     dcc.Loading(
-    type="circle",
-    fullscreen=True,
-    children=dcc.Graph(figure=fig, style={'height': '90vh'})
+        type="circle",
+        fullscreen=True,
+        children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
+
     ),
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
@@ -204,8 +205,7 @@ app.layout = html.Div([
         html.P("For more information please contact the developer at jackson.vaughn@bristol.ac.uk",
                style={'textAlign': 'center', 'margin': '20px auto', 'maxWidth': '800px'}),
         
-        dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True),
-        dcc.Tooltip(id="graph-tooltip"),
+
         
     ])
 
