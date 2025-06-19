@@ -70,12 +70,8 @@ scatter_layer = go.Scatter3d(
         #     ticktext=['0.01', '0.1', '1', '10']
         # )
     ),
-    # hoverinfo="none",
-    # hovertemplate=None,
-    customdata=df['img_src'],
-    hovertemplate=(
-        "<img src='%{customdata}' style='width:100px;'><extra></extra>"
-    ),
+    hoverinfo="none",
+    hovertemplate=None,
     name=""
 )
 
@@ -85,12 +81,8 @@ scatter_layer_invisible = go.Scatter3d(
     z=df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
-    # hoverinfo="none",
-    # hovertemplate=None,
-    customdata=df['img_src'],
-    hovertemplate=(
-        "<img src='%{customdata}' style='width:100px;'><extra></extra>"
-    ),
+    hoverinfo="none",
+    hovertemplate=None,
     name=""
 )
 
@@ -196,7 +188,7 @@ app.layout = html.Div([
         children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
 
     ),
-    dcc.Tooltip(id="graph-tooltip", direction='bottom'),
+    dcc.Tooltip(id="graph-tooltip", direction='top'),
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
