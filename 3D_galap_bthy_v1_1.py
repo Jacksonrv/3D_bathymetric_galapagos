@@ -13,7 +13,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 import os
-from dash import Output, Input, no_update
+from dash import Output, Input, no_update, State
 from flask import send_from_directory
 import traceback
 
@@ -139,41 +139,58 @@ server = app.server  # Dash wraps Flask
 def serve_static(path):
     return send_from_directory('static', path)
 
-@app.callback(
-    Output("graph-tooltip", "show"),
-    Output("graph-tooltip", "bbox"),
-    Output("graph-tooltip", "children"),
-    Input("graph-3d", "hoverData"),
-)
-def display_hover(hoverData):
-    try:
-        if hoverData is None:
-            return False, no_update, no_update
+# @app.callback(
+#     Output("graph-tooltip", "show"),
+#     Output("graph-tooltip", "bbox"),
+#     Output("graph-tooltip", "children"),
+#     Input("graph-3d", "hoverData"),
+# )
+# def display_hover(hoverData):
+#     try:
+#         if hoverData is None:
+#             return False, no_update, no_update
         
 
-        pt = hoverData["points"][0]
-        if "pointNumber" not in pt:
-            return False, no_update, no_update
-        bbox = pt["bbox"]
-        index = pt["pointNumber"]
-        df_row = df.loc[index]
+#         pt = hoverData["points"][0]
+#         if "pointNumber" not in pt:
+#             return False, no_update, no_update
+#         bbox = pt["bbox"]
+#         index = pt["pointNumber"]
+#         df_row = df.loc[index]
 
-        img_src = df_row['img_src']
+#         img_src = df_row['img_src']
 
-        children = [
-            html.Div([
-                html.Img(src=img_src, style={"width": "100%"}),
-                html.H2("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
-            ], style={'width': '400px', 'white-space': 'normal'})
-        ]
+#         children = [
+#             html.Div([
+#                 html.Img(src=img_src, style={"width": "100%"}),
+#                 html.H2("Corals located here are shown in green", style={"color": "black", "overflow-wrap": "break-word", "fontSize": "10px"})
+#             ], style={'width': '400px', 'white-space': 'normal'})
+#         ]
 
 
-        return True, bbox, children
+#         return True, bbox, children
 
-    except Exception as e:
-        print("ERROR IN TOOLTIP CALLBACK:", e)
-        traceback.print_exc()
-        return False, no_update, no_update
+#     except Exception as e:
+#         print("ERROR IN TOOLTIP CALLBACK:", e)
+#         traceback.print_exc()
+#         return False, no_update, no_update
+
+@app.callback(
+    Output('custom-tooltip', 'style'),
+    Output('custom-tooltip', 'children'),
+    Input('graph', 'hoverData'),
+    State('custom-tooltip', 'style')
+)
+def update_tooltip(hoverData, style):
+    if hoverData is None:
+        style['display'] = 'none'
+        return style, no_update
+
+    pt = hoverData['points'][0]
+    img_src = pt['customdata']
+
+    style['display'] = 'block'
+    return style, html.Img(src=img_src, style={'width': '100px'})
 
 app.layout = html.Div([
     html.H1("3D Bathymetric Map of the Galapagos", style={'textAlign': 'center'}),
@@ -188,7 +205,15 @@ app.layout = html.Div([
         children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
 
     ),
-    dcc.Tooltip(id="graph-tooltip", direction='top'),
+    # dcc.Tooltip(id="graph-tooltip", direction='top'),
+    html.Div(id='custom-tooltip', style={
+        'display': 'none',
+        'position': 'fixed',
+        'backgroundColor': 'white',
+        'border': '1px solid black',
+        'padding': '5px',
+        'zIndex': 1000
+    }),
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
