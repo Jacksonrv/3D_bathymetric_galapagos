@@ -70,7 +70,12 @@ scatter_layer = go.Scatter3d(
         #     ticktext=['0.01', '0.1', '1', '10']
         # )
     ),
-    customdata=df.index,
+    # hoverinfo="none",
+    # hovertemplate=None,
+    customdata=df['img_src'],
+    hovertemplate=(
+        "<img src='%{customdata}' style='width:100px;'><extra></extra>"
+    ),
     name=""
 )
 
@@ -80,7 +85,12 @@ scatter_layer_invisible = go.Scatter3d(
     z=df['Depth'], 
     mode='markers',
     marker=dict(size=40, color='rgba(0,0,0,0)'),
-    customdata=df.index,
+    # hoverinfo="none",
+    # hovertemplate=None,
+    customdata=df['img_src'],
+    hovertemplate=(
+        "<img src='%{customdata}' style='width:100px;'><extra></extra>"
+    ),
     name=""
 )
 
@@ -147,8 +157,11 @@ def display_hover(hoverData):
     try:
         if hoverData is None:
             return False, no_update, no_update
+        
 
         pt = hoverData["points"][0]
+        if "pointNumber" not in pt:
+            return False, no_update, no_update
         bbox = pt["bbox"]
         index = pt["pointNumber"]
         df_row = df.loc[index]
