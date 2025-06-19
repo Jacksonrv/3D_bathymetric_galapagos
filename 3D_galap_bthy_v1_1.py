@@ -150,7 +150,7 @@ def display_hover(hoverData):
 
         pt = hoverData["points"][0]
         bbox = pt["bbox"]
-        index = pt["customdata"]
+        index = pt["pointNumber"]
         df_row = df.loc[index]
 
         img_src = df_row['img_src']
