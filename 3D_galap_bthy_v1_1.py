@@ -196,7 +196,7 @@ app.layout = html.Div([
         children=dcc.Graph(id="graph-3d", figure=fig, clear_on_unhover=True, style={'height': '90vh'})
 
     ),
-    dcc.Tooltip(id="graph-tooltip"),
+    dcc.Tooltip(id="graph-tooltip", direction='bottom'),
 
     html.P(["Chlorophyll-a and barium residuals are log-scaled. Barium residuals are calculated as ",
            "the absolute difference between James' regression and the averaged Ba/Ca of the subsamples"],
